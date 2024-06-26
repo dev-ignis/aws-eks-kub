@@ -2,6 +2,12 @@ locals {
   cluster_name = "education-eks-${random_string.suffix.result}"
 }
 
+terraform {
+  backend "local" {
+    path = "./terraform.tfstate"
+  }
+}
+
 resource "random_string" "suffix" {
   length  = 8
   special = false
@@ -9,4 +15,9 @@ resource "random_string" "suffix" {
 
 module "eks" {
   source = "./modules/aws-eks"
+}
+
+/* deployments */
+module "nginx" {
+  source = "./deploy/nginx"
 }
