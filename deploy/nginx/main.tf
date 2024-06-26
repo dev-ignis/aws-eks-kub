@@ -32,7 +32,7 @@ provider "kubernetes" {
 
 resource "kubernetes_deployment" "nginx" {
   metadata {
-    name = "scalable-nginx-example"
+    name = var.kubernetes_deployment_nginx_name
     labels = {
       App = "ScalableNginxExample"
     }

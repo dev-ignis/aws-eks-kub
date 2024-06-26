@@ -12,3 +12,8 @@ variable "kubernetes_service_nginx_name" {
   type        = string
   default     = "mht-nginx-app"
 }
+
+variable "kubernetes_deployment_nginx_name" {
+  type        = string
+  default     = "mht-nginx"
+}
