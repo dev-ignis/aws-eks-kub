@@ -1,5 +1,8 @@
 locals {
-  name   = "mht-cluster"
+  cluster_name    = "mht-cluster"
+  cluster_version = "1.29"
+  ami_type        = "AL2_x86_64"
+  instance_types  = ["t3.small"]
 }
 
 module "vpc" {
@@ -8,73 +11,63 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.14.0"
+  version = "20.8.5"
 
-  cluster_name                   = local.name
-  cluster_endpoint_public_access = true
+  cluster_name    = local.cluster_name
+  cluster_version = local.cluster_version
+
+  cluster_endpoint_public_access           = true
+  enable_cluster_creator_admin_permissions = true
 
   cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent = true
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
     }
   }
 
-  vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = module.vpc.private_subnets
-  control_plane_subnet_ids = module.vpc.intra_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
-  # EKS Managed Node Group(s)
   eks_managed_node_group_defaults = {
-    ami_type       = "AL2_x86_64"
-    instance_types = ["t2.micro"]
+    ami_type = local.ami_type
 
-    attach_cluster_primary_security_group = true
   }
 
   eks_managed_node_groups = {
-    mht-cluster-wg = {
+    one = {
+      name = var.managed_work_group_one_name
+
+      instance_types = local.instance_types
+
+      min_size     = 1
+      max_size     = 3
+      desired_size = 2
+    }
+
+    two = {
+      name = var.managed_work_group_two_name
+
+      instance_types = local.instance_types
+
       min_size     = 1
       max_size     = 2
       desired_size = 1
-
-      instance_types = ["t2.micro"]
-      capacity_type  = "SPOT"
-
-      tags = {
-        ExtraTag = var.eks_worker_group
-      }
     }
-  }
-
-  node_security_group_additional_rules = {
-    ingress_allow_access_from_control_plane = {
-      type                          = "ingress"
-      protocol                      = "tcp"
-      from_port                     = 9443
-      to_port                       = 9443
-      source_cluster_security_group = true
-      description                   = "Allow access from control plane to webhook port of AWS load balancer controller"
-    }
-  }
-
-  tags = {
-    Name = var.eks_tag
   }
 }
 
+# https://aws.amazon.com/blogs/containers/amazon-ebs-csi-driver-is-now-generally-available-in-amazon-eks-add-ons/
+data "aws_iam_policy" "ebs_csi_policy" {
+  arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
 
+module "irsa-ebs-csi" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version = "5.39.0"
 
-
-
-
-
-
-
-
-
+  create_role                   = true
+  role_name                     = "AmazonEKSTFEBSCSIRole-${module.eks.cluster_name}"
+  provider_url                  = module.eks.oidc_provider
+  role_policy_arns              = [data.aws_iam_policy.ebs_csi_policy.arn]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
+}

@@ -1,4 +1,4 @@
-variable "security_group_name" {
+variable "vpc_name" {
   type        = string
-  default     = "MHT Security Group"
+  default     = "education-vpc"
 }

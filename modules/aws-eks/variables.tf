@@ -1,9 +1,9 @@
-variable "eks_worker_group" {
+variable "managed_work_group_one_name" {
   type        = string
-  default     = "MHT EKS worker group"
+  default     = "node-group-1"
 }
 
-variable "eks_tag" {
+variable "managed_work_group_two_name" {
   type        = string
-  default     = "MHT EKS cluster"
+  default     = "node-group-2"
 }
