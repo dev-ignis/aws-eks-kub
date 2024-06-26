@@ -17,3 +17,8 @@ output "cluster_name" {
   description = "Kubernetes Cluster Name"
   value       = module.eks.cluster_name
 }
+
+output "lb_ip" {
+  description = "Load Balancer URL"
+  value = module.nginx.lb_ip
+}

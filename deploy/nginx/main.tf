@@ -1,5 +1,5 @@
 locals {
-  replicas        = 4
+  replicas        = 2
   container_port  = 80
 }
 
