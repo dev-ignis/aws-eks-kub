@@ -1,3 +1,8 @@
+locals {
+  replicas        = 4
+  container_port  = 80
+}
+
 data "terraform_remote_state" "eks" {
   backend = "local"
 
@@ -34,7 +39,7 @@ resource "kubernetes_deployment" "nginx" {
   }
 
   spec {
-    replicas = 4
+    replicas = local.replicas
     selector {
       match_labels = {
         App = "ScalableNginxExample"
@@ -52,7 +57,7 @@ resource "kubernetes_deployment" "nginx" {
           name  = "example"
 
           port {
-            container_port = 80
+            container_port = local.container_port
           }
 
           resources {
@@ -86,8 +91,4 @@ resource "kubernetes_service" "nginx" {
 
     type = "LoadBalancer"
   }
-}
-
-output "lb_ip" {
-  value = kubernetes_service.nginx.status.0.load_balancer.0.ingress.0.hostname
 }
