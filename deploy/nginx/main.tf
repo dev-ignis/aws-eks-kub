@@ -78,7 +78,7 @@ resource "kubernetes_deployment" "nginx" {
 
 resource "kubernetes_service" "nginx" {
   metadata {
-    name = "nginx-example"
+    name = var.kubernetes_service_nginx_name
   }
   spec {
     selector = {
