@@ -34,7 +34,7 @@ resource "kubernetes_deployment" "nginx" {
   metadata {
     name = var.kubernetes_deployment_nginx_name
     labels = {
-      App = "ScalableNginxExample"
+      App = var.kubernetes_deployment_nginx_label
     }
   }
 
@@ -42,19 +42,19 @@ resource "kubernetes_deployment" "nginx" {
     replicas = local.replicas
     selector {
       match_labels = {
-        App = "ScalableNginxExample"
+        App = var.kubernetes_deployment_nginx_spec_label
       }
     }
     template {
       metadata {
         labels = {
-          App = "ScalableNginxExample"
+          App = var.kubernetes_deployment_nginx_spec_label
         }
       }
       spec {
         container {
           image = "nginx:1.7.8"
-          name  = "example"
+          name  = var.kubernetes_deployment_nginx_spec_template_container_name
 
           port {
             container_port = local.container_port
