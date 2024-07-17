@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMapName }}
+data:
+  nginx.conf: |
+    events { }
+    http {
+        server {
+            listen 80;
+            location / {
+                proxy_pass http://localhost;
+            }
+            location /golang {
+                proxy_pass http://{{ .Values.golangService.name }}:{{ .Values.golangService.port }};
+            }
+        }
+    }

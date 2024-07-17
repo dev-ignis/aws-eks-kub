@@ -1,4 +1,4 @@
-{{- define "nginx-app.fullname" -}}
+{{- define "golang-app.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{ .Values.fullnameOverride }}
 {{- else -}}
@@ -7,15 +7,15 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "nginx-app.labels" -}}
+{{- define "golang-app.labels" -}}
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-app.kubernetes.io/name: {{ include "nginx-app.name" . }}
+app.kubernetes.io/name: {{ include "golang-app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.AppVersion }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
-{{- define "nginx-app.name" -}}
+{{- define "golang-app.name" -}}
 {{- if .Values.nameOverride -}}
 {{ .Values.nameOverride }}
 {{- else -}}

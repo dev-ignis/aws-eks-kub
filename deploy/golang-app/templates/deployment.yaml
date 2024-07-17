@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "nginx-app.fullname" . }}
+  name: {{ include "golang-app.fullname" . }}
   labels:
-    {{- include "nginx-app.labels" . | nindent 4 }}
+    {{- include "golang-app.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -19,10 +19,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: {{ .Values.service.port }}
-          volumeMounts:
-            - name: nginx-config
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
@@ -30,7 +26,3 @@ spec:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
-      volumes:
-        - name: nginx-config
-          configMap:
-            name: {{ .Values.configMapName }}
