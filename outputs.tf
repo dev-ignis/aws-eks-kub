@@ -18,7 +18,7 @@ output "cluster_name" {
   value       = module.eks.cluster_name
 }
 
-# output "lb_ip" {
-#   description = "Load Balancer URL"
-#   value = module.nginx.lb_ip
-# }
+output "lb_ip" {
+  description = "Load Balancer URL"
+  value = module.nginx.lb_ip
+}

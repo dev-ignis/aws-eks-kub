@@ -12,6 +12,6 @@ module "eks" {
 }
 
 /* deployments */
-# module "nginx" {
-#   source = "./deploy/nginx"
-# }
+module "nginx" {
+  source = "./deploy/nginx"
+}
