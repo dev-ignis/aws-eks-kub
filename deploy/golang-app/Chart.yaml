@@ -1,5 +1,0 @@
-apiVersion: v2
-name: golang-app
-description: A Helm chart for deploying a Golang application
-version: 0.1.0
-appVersion: "latest"

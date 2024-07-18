@@ -10,8 +10,3 @@ resource "random_string" "suffix" {
 module "eks" {
   source = "./modules/aws-eks"
 }
-
-/* deployments */
-module "nginx" {
-  source = "./deploy/nginx"
-}
