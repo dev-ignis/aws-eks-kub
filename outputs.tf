@@ -12,3 +12,13 @@ output "eks_cluster_security_group_id" {
   description = "EKS Cluster Security Group ID"
   value       = module.eks.cluster_security_group_id
 }
+
+output "region" {
+  description = "AWS region"
+  value       = var.region
+}
+
+output "cluster_name" {
+  description = "Kubernetes Cluster Name"
+  value       = module.eks.cluster_name
+}
